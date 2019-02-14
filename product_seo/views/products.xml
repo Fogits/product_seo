@@ -38,28 +38,28 @@
                 </t>
             </div>
         </xpath>
-        <xpath expr="//h6" position="replace">
+        <xpath expr="//strong" position="replace">
 
             <t t-if="product.ref_product and pager['page']['num']&gt;1">
-                <h6>
+                <strong>
                     <a itemprop="name"
                        t-attf-href="/shop/product/#{product.ref_product}?page=#{page_num}"
                        t-att-content="product.name" t-field="product.name"/>
-                </h6>
+                </strong>
             </t>
             <t t-if="product.ref_product and pager['page']['num']&gt;=1">
-                <h6>
+                <strong>
                     <a itemprop="name"
                        t-attf-href="/shop/product/#{product.ref_product}"
                        t-att-content="product.name" t-field="product.name"/>
-                </h6>
+                </strong>
             </t>
             <t t-if="not product.ref_product">
-                <h6>
+                <strong>
                     <a itemprop="name"
                        t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))"
                        t-att-content="product.name" t-field="product.name"/>
-                </h6>
+                </strong>
             </t>
         </xpath>
     </template>

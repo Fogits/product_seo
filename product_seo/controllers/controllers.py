@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 from odoo.http import Controller, request
-from odoo import http, tools
+from odoo import http, tools, _
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 from odoo.addons.website.controllers.main import QueryURL
-from odoo import api, fields
 
 
 class WebsiteSaleExtend(WebsiteSale):
+    # /shop/product
     @http.route(['/shop/product/<model("product.template"):product>', '/shop/product/<string:test>'], type='http',
                 auth="public", website=True)
     def product(self, product='', ref_product='', category='', search='', **kwargs):
-
         if ref_product:
             product = request.env['product.template'].search([('ref_product', '=', ref_product)])
-
         product_context = dict(request.env.context,
                                active_id=product.id,
                                partner=request.env.user.partner_id)
@@ -34,8 +32,7 @@ class WebsiteSaleExtend(WebsiteSale):
 
         from_currency = request.env.user.company_id.currency_id
         to_currency = pricelist.currency_id
-        compute_currency = lambda price: from_currency._convert(price, to_currency, request.env.user.company_id,
-                                                                fields.Date.today())
+        compute_currency = lambda price: from_currency.compute(price, to_currency)
 
         if not product_context.get('pricelist'):
             product_context['pricelist'] = pricelist.id
@@ -52,7 +49,6 @@ class WebsiteSaleExtend(WebsiteSale):
             'categories': categs,
             'main_object': product,
             'product': product,
-            'optional_product_ids': [p.with_context({'active_id': p.id}) for p in product.optional_product_ids],
-            'get_attribute_exclusions': self._get_attribute_exclusions,
+            'get_attribute_value_ids': self.get_attribute_value_ids,
         }
         return request.render("website_sale.product", values)
