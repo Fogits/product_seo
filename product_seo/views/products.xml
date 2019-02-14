@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Cart Products Item Inherit-->
+    <template id="products_items_inherit" inherit_id="website_sale.products_item" name="Products">
+        <xpath expr="//div[@class='oe_product_image']" position="replace">
+            <div class="oe_product_image">
+                <!-- Product Had link Ref-->
+                <t t-set="page_num" t-value="pager['page']['num']"/>
+                <t t-if="product.ref_product and pager['page']['num']&gt;1">
+                    <a itemprop="url" t-attf-href="/shop/product/#{product.ref_product}?page=#{page_num}">
+                        <span itemprop="image"
+                              t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"
+                              t-field="product.image"
+                              t-options="{'widget': 'image', 'resize': None if product_image_big else '300x300', 'zoom': 'image'}"
+                              t-att-alt="product.name"/>
+                    </a>
+                </t>
+                <t t-if="product.ref_product and pager['page']['num']&lt;=1">
+                    <a itemprop="url" t-attf-href="/shop/product/#{product.ref_product}">
+                        <span itemprop="image"
+                              t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"
+                              t-field="product.image"
+                              t-options="{'widget': 'image', 'resize': None if product_image_big else '300x300', 'zoom': 'image'}"
+                              t-att-alt="product.name"/>
+                    </a>
+                </t>
+                <!-- Product Simple Mode-->
+                <t t-if="not product.ref_product">
+                    <a itemprop="url"
+                       t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
+                        <span itemprop="image"
+                              t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"
+                              t-field="product.image"
+                              t-options="{'widget': 'image', 'resize': None if product_image_big else '300x300', 'zoom': 'image'}"
+                              t-att-alt="product.name"/>
+                    </a>
+                </t>
+            </div>
+        </xpath>
+        <xpath expr="//h6" position="replace">
+
+            <t t-if="product.ref_product and pager['page']['num']&gt;1">
+                <h6>
+                    <a itemprop="name"
+                       t-attf-href="/shop/product/#{product.ref_product}?page=#{page_num}"
+                       t-att-content="product.name" t-field="product.name"/>
+                </h6>
+            </t>
+            <t t-if="product.ref_product and pager['page']['num']&gt;=1">
+                <h6>
+                    <a itemprop="name"
+                       t-attf-href="/shop/product/#{product.ref_product}"
+                       t-att-content="product.name" t-field="product.name"/>
+                </h6>
+            </t>
+            <t t-if="not product.ref_product">
+                <h6>
+                    <a itemprop="name"
+                       t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))"
+                       t-att-content="product.name" t-field="product.name"/>
+                </h6>
+            </t>
+        </xpath>
+    </template>
+
+
+    <!-- Cart Lines Inherit-->
+    <template id="cart_lines_extend" inherit_id="website_sale.cart_lines" name="Shopping Cart Lines Extend">
+        <xpath expr="//tbody" position="replace">
+            <tbody>
+                <t t-foreach="website_sale_order.website_order_line" t-as="line">
+                    <tr>
+                        <td colspan="2" t-if="not line.product_id.product_tmpl_id" class='td-img'></td>
+                        <td align="center" t-if="line.product_id.product_tmpl_id" class='td-img'>
+                            <span t-field="line.product_id.image_small"
+                                  t-options="{'widget': 'image', 'class': 'img-rounded'}"/>
+                        </td>
+                        <td t-if="line.product_id.product_tmpl_id" class='td-product_name'>
+                            <div>
+                                <t t-if="line.product_id.ref_product">
+                                    <a t-attf-href="/shop/product/#{line.product_id.ref_product}">
+                                        <strong t-esc="line.product_id.with_context(display_default_code=False).display_name"/>
+                                    </a>
+                                </t>
+                                <t t-if="not line.product_id.ref_product">
+                                    <a t-attf-href="/shop/product/#{slug(line.product_id.product_tmpl_id) }">
+                                        <strong t-esc="line.product_id.with_context(display_default_code=False).display_name"/>
+                                    </a>
+                                </t>
+                            </div>
+                            <div class="text-muted hidden-xs small">
+                                <t t-foreach="line.name.splitlines()[1:]" t-as="name_line">
+                                    <span>
+                                        <t t-esc="name_line"/>
+                                    </span>
+                                    <br/>
+                                </t>
+                            </div>
+                            <a href='#' class='js_delete_product hidden-xs no-decoration'>
+                                <small>
+                                    <i class='fa fa-trash-o'></i>
+                                    Remove
+                                </small>
+                            </a>
+                        </td>
+                        <td class="text-center td-qty">
+                            <div class="css_quantity input-group oe_website_spinner">
+                                <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json hidden-xs">
+                                    <i class="fa fa-minus"></i>
+                                </a>
+                                <input type="text" class="js_quantity form-control quantity"
+                                       t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id"
+                                       t-att-value="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty"/>
+                                <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="text-center td-price" name="price">
+                            <t t-if="(compute_currency(line.product_id.lst_price) - line.price_reduce ) &gt; 0.01  and website.get_current_pricelist().discount_policy=='without_discount'">
+                                <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;"
+                                     t-esc="compute_currency(line.product_id.website_public_price)"
+                                     t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                            </t>
+                            <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;"
+                                  t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}"
+                                  groups="sale.group_show_price_subtotal"/>
+                            <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;"
+                                  t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}"
+                                  groups="sale.group_show_price_total"/>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </xpath>
+    </template>
+
+</odoo>
+
+
