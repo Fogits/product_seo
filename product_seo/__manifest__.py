@@ -17,7 +17,7 @@
     # for the full list
     'category': 'Uncategorized',
     'version': '12.0',
-
+    'images': ['static/description/banner.png'],
     # any module necessary for this one to work correctly
     'depends': ['base','product','website_sale'],
 
