@@ -9,7 +9,7 @@
         Adding new Custm Link for Product 
     """,
 
-    'author': 'Fogits International',
+    'author': 'Fogits Solutions',
     'website': "https://www.fogits.com/",
 
     # Categories can be used to filter modules in modules listing
