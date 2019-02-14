@@ -13,7 +13,7 @@
     'website': "https://www.fogits.com/",
     'category': 'Uncategorized',
     'version': '11.0',
-    'images': ['static/description/banner.png'],
+    'images': ['static/description/banner.jpg'],
     # any module necessary for this one to work correctly
     'depends': ['base','product','website_sale'],
 
