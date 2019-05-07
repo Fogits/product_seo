@@ -7,7 +7,7 @@ from odoo.addons.website.controllers.main import QueryURL
 
 class WebsiteSaleExtend(WebsiteSale):
     # /shop/product
-    @http.route(['/shop/product/<model("product.template"):product>', '/shop/product/<string:test>'], type='http',
+    @http.route(['/shop/product/<model("product.template"):product>', '/shop/product/<string:ref_product>'], type='http',
                 auth="public", website=True)
     def product(self, product='', ref_product='', category='', search='', **kwargs):
         if ref_product:
