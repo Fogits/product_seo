@@ -7,7 +7,7 @@ from odoo import api, fields
 
 
 class WebsiteSaleExtend(WebsiteSale):
-    @http.route(['/shop/product/<model("product.template"):product>', '/shop/product/<string:test>'], type='http',
+    @http.route(['/shop/product/<model("product.template"):product>', '/shop/product/<string:ref_product>'], type='http',
                 auth="public", website=True)
     def product(self, product='', ref_product='', category='', search='', **kwargs):
 
