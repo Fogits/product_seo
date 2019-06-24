@@ -3,7 +3,7 @@
     'name': "Product SEO",
 
     'summary': """
-        This module add new Custom Link for Product for having a good SEO """,
+       You will be able to create a new link for your product(s). You only need to add a SEO name for the product that you want to change its link. """,
 
     'description': """
         Adding new Custm Link for Product 
